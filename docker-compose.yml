@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  shows-db:
+    container_name: shows-db
+    build:
+      context: ./src/admin/db
+    ports:
+      - 5435:5432  # expose ports - HOST:CONTAINER
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: exit 0
+
+  admin-service:
+    container_name: admin-service
+    image: shows-ondemand/admin-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/usr/app'
+    ports:
+      - 3032:3032
+    environment:
+      - APP_SETTINGS=admin.config.DevelopmentConfig
+      - DATABASE_URL=postgres://postgres:postgres@shows-db:5432/admin_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@shows-db:5432/admin_test
+      - SECRET_KEY=my_precious
+      - PORT=3032
+    depends_on:
+      - shows-db
+    links:
+      - shows-db
+    restart: always
+    stdin_open: true
+    tty: true
+    command: sh -c "gunicorn --config src/admin/gunicorn_hooks.py --workers 2 --worker-class gevent --reload --timeout 5 --bind 0.0.0.0:3032 --access-logfile - --log-file - manage:app"
+
