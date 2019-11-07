@@ -16,16 +16,6 @@ def ping_pong():
         'message': 'pong!'
     })
 
-@users_blueprint.route('/initdb', methods=['GET'])
-def initdb():
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
-    return jsonify({
-        'status': 'success',
-        'message': 'db initialized!'
-    })
-
 
 @users_blueprint.route('/users', methods=['POST'])
 @authenticate

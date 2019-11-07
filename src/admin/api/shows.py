@@ -2,11 +2,8 @@ import math
 from urllib import parse
 from flask_restplus import Namespace, Resource, fields, Api, reqparse
 
-from admin import constants
-from admin import models
-from admin import settings
-from admin import exceptions
-from admin import utils
+from admin import constants, models, settings, exceptions, utils
+from admin.api.utils import authenticate, is_admin
 
 ns = Namespace(
     'Shows',
@@ -80,7 +77,7 @@ class BaseShowResource(Resource):
         }
 
     @staticmethod
-    def item_path_list(organization_id, **kwargs):
+    def item_path_list(**kwargs):
         utils.LOGGER.info("{} - {}".format(kwargs, parse.urlencode(kwargs)))
         return '{}/{}/shows{}'.format(
             settings.get_var('HOST'), settings.get_var('API_VERSION'),
@@ -155,11 +152,11 @@ class ShowListResource(BaseShowResource):
         }
 
     @ns.expect(PAGINATION_INPUT)
-    def get(self, organization_id, **kwargs):
+    def get(self, **kwargs):
         utils.LOGGER.debug("Executing GET on predictors.")
         return self.get_paginated_list(**kwargs)
 
-    def post(self, organization_id, **kwargs):
+    def post(self, **kwargs):
         utils.LOGGER.debug('Executing POST on predictors.')
         print(kwargs)
         return {}
@@ -170,6 +167,15 @@ class PredictorAPI(BaseShowResource):
     @ns.doc(params={'show_id': 'The ID of the show you want to retrieve data from.'})
     def get(self, show_id=None):
         utils.LOGGER.debug('Executing GET on shows.')
+        show = models.Show.query.filter_by(id=int(show_id)).first()
+        if show is None:
+            raise exceptions.ResourceNotFound()
+        return self.format_item(show)
+
+    @authenticate
+    @ns.doc(params={'show_id': 'The ID of the show you want to delete.'})
+    def delete(self, show_id=None):
+        utils.LOGGER.debug('Executing DELETE on shows.')
         show = models.Show.query.filter_by(id=int(show_id)).first()
         if show is None:
             raise exceptions.ResourceNotFound()

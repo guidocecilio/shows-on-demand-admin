@@ -1,9 +1,4 @@
 # These should be same that Public API uses after auth
-HEADERS_TENANT_ID = 'ININ-Organization-Id'
-HEADERS_USER_ID = 'ININ-User-Id'
-HEADERS_CORRELATION_ID = 'ININ-Correlation-Id'
-HEADERS_AUTH_HASH = 'ININ-Auth-Hash'
-HEADERS_HOME_ORG_ID = 'ININ-Home-Organization-Id'
 FIELD_EXPANSION_KEY = 'fields'
 
 # Pagination things

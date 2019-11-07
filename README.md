@@ -17,4 +17,3 @@ Run the app using docker-compose
 ```bash
 $ docker-compose up
 ```
-

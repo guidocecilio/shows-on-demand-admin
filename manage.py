@@ -19,6 +19,7 @@ COV.start()
 
 
 app = create_app()
+app.app_context().push()
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
