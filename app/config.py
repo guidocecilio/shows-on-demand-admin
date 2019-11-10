@@ -12,6 +12,9 @@ class BaseConfig:
     TOKEN_EXPIRATION_SECONDS = 0
     RESTPLUS_VALIDATE = os.environ.get('API_VALIDATE', True)
     SWAGGER_PATH = os.environ.get('SWAGGER_PATH', '/api-docs/')
+    PORT = '3031'
+    API_VERSION = 'v1'
+    LOG_LEVEL = os.environ.get('LOG_LEVEL') or 'INFO'
 
 
 class DevelopmentConfig(BaseConfig):

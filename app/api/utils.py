@@ -2,7 +2,7 @@ from functools import wraps
 
 from flask import request, jsonify
 
-from admin.models import User
+from app.models.user import User
 
 def authenticate(f):
     @wraps(f)

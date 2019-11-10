@@ -61,3 +61,6 @@ RUN python3.6 setup.py develop --user
 
 # run server
 CMD ["sh", "./entrypoint.sh"]
+# CMD ["sh", "-c", "/home/mmsuser/.local/bin/gunicorn --config src/mms/gunicorn_hooks.py \
+# --workers $G_WORKERS --worker-class gevent --preload \
+# --timeout $G_TIMEOUT --bind 0.0.0.0:$PORT --log-file - mms.wsgi:app"]

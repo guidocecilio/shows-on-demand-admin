@@ -1,5 +1,5 @@
-from admin import logging
-from admin import settings
+from app import logging
+from app import settings
 
 LOGGER = logging.setup_logger(
     'admin',

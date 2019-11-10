@@ -1,7 +1,7 @@
 import flask
 from flask_restplus import fields, Api, marshal
 
-from admin import constants
+from app import constants
 
 API = Api()
 

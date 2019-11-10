@@ -3,7 +3,8 @@ import datetime
 import jwt
 from flask import current_app
 
-from admin import db, bcrypt
+from app import bcrypt
+from app.models import db
 
 
 class User(db.Model):
@@ -56,14 +57,3 @@ class User(db.Model):
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
-
-
-class Show(db.Model):
-    __tablename__ = "shows"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(128), unique=True, nullable=False)
-    description = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self, title, description=None, created_at=datetime.datetime.utcnow()):
-        self.created_at = created_at

@@ -1,27 +1,40 @@
 import unittest
 import coverage
 
-from flask_script import Manager
-from flask_migrate import MigrateCommand
+from flask_migrate import stamp
 
-from admin import create_app, db
-from admin.models import User
+from app import manager
+from app import current_app as app
+from app.models import db
+from app.models.user import User
+from app.models.show import Show
+from app.api.helpers.db import get_or_create
+from populate_db import populate
 
 
 COV = coverage.coverage(
     branch=True,
-    include='admin/*',
+    include='app/*',
     omit=[
-        'admin/tests/*'
+        'app/tests/*'
     ]
 )
 COV.start()
 
 
-app = create_app()
-app.app_context().push()
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
+@manager.command
+def list_routes():
+    import urllib
+
+    output = []
+    for rule in app.url_map.iter_rules():
+        methods = ','.join(rule.methods)
+        line = urllib.parse.unquote("{:50s} {:20s} {}".format(
+            rule.endpoint, methods, rule))
+        output.append(line)
+
+    for line in sorted(output):
+        print(line)
 
 
 @manager.command
@@ -51,26 +64,24 @@ def cov():
 
 
 @manager.command
-def recreate_db():
-    """Recreates a database."""
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
+def initialize_db():
+    with app.app_context():
+        populate_data = True
+        try:
+            db.create_all()
+            stamp()
+        except Exception:
+            populate_data = False
+            print("[LOG] Could not create tables. Either database does not exist or tables already created")
+        if populate_data:
+            populate()
 
 
 @manager.command
-def seed_db():
-    """Seeds the database."""
-    db.session.add(User(
-        username='guidocecilio',
-        email='guidocecilio@gmail.com',
-        password='test'
-    ))
-    db.session.add(User(
-        username='guidoenmanuel',
-        email='guidoenmanuel@gmail.com',
-        password='test'
-    ))
+def reset_db():
+    """Recreates a database."""
+    db.drop_all()
+    db.create_all()
     db.session.commit()
 
 

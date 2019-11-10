@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc
 
-from admin.api.utils import authenticate, is_admin
-from admin.models import User
-from admin import db
+from app.api.utils import authenticate, is_admin
+from app.models.user import User
+from app import db
 
 
 users_blueprint = Blueprint('users', __name__)
@@ -16,6 +16,15 @@ def ping_pong():
         'message': 'pong!'
     })
 
+@users_blueprint.route('/initdb', methods=['GET'])
+def initdb():
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
+    return jsonify({
+        'status': 'success',
+        'message': 'pong!'
+    })
 
 @users_blueprint.route('/users', methods=['POST'])
 @authenticate

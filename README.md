@@ -17,3 +17,19 @@ Run the app using docker-compose
 ```bash
 $ docker-compose up
 ```
+
+## Initializing the Database and seeding the data
+```bash
+$ docker exec -it admin-service bash
+```
+```bash
+$ python manage.py initialize_db
+```
+
+## Troubleshooting
+
+### Initializing the database
+If there are no migrations at the moment you could use the followig Flask command
+```bash
+$ flask init db stamp head
+``` 
