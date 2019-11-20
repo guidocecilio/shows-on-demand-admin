@@ -68,6 +68,7 @@ def initialize_db():
     with app.app_context():
         populate_data = True
         try:
+            db.drop_all()
             db.create_all()
             stamp()
         except Exception:

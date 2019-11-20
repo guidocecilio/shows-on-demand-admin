@@ -57,7 +57,7 @@ ADD ./entrypoint.sh /usr/src/app/entrypoint.sh
 # add app
 ADD . /usr/src/app
 
-RUN python3.6 setup.py develop --user
+# RUN python3.6 setup.py develop --user
 
 # run server
 CMD ["sh", "./entrypoint.sh"]
